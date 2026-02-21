@@ -1,2 +1,0 @@
-[console_scripts]
-rename-tool = rename_tool.main:main

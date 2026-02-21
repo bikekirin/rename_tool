@@ -1,7 +1,0 @@
-Metadata-Version: 2.4
-Name: rename_tool
-Version: 0.1.0
-Summary: Bulk file renaming tool
-Author: hito
-Requires-Dist: rich
-Requires-Dist: openpyxl

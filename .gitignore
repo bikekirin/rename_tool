@@ -1,6 +1,14 @@
-.venv/
+# macOS
+.DS_Store
+
+# Python
 __pycache__/
 *.pyc
-*.xlsx
-*.csv
-*.tsv
+
+# virtualenv
+.venv/
+
+# packaging
+*.egg-info/
+dist/
+build/
