@@ -1,14 +1,101 @@
+# =========================
+# OS
+# =========================
+
 # macOS
 .DS_Store
+.AppleDouble
+.LSOverride
 
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# =========================
 # Python
+# =========================
+
 __pycache__/
-*.pyc
+*.py[cod]
+*$py.class
 
-# virtualenv
+# C extensions
+*.so
+
+# =========================
+# Virtual Environment
+# =========================
+
 .venv/
+venv/
+env/
+ENV/
 
-# packaging
-*.egg-info/
-dist/
+# =========================
+# Distribution / Packaging
+# =========================
+
 build/
+dist/
+*.egg-info/
+.eggs/
+pip-wheel-metadata/
+
+# =========================
+# Installer logs
+# =========================
+
+pip-log.txt
+pip-delete-this-directory.txt
+
+# =========================
+# Test / Coverage
+# =========================
+
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+pytest_cache/
+*.cover
+
+# =========================
+# Type checkers
+# =========================
+
+.mypy_cache/
+.pyre/
+.pytype/
+
+# =========================
+# IDE / Editor
+# =========================
+
+# VSCode
+.vscode/
+
+# PyCharm
+.idea/
+
+# =========================
+# Jupyter
+# =========================
+
+.ipynb_checkpoints
+
+# =========================
+# Logs
+# =========================
+
+*.log
+
+# =========================
+# Temporary files
+# =========================
+
+*.swp
+*.swo
+*~
