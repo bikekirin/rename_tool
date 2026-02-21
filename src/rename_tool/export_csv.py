@@ -1,25 +1,39 @@
-import csv
-
-
 def export_to_csv(results, filename="rename_result.csv"):
-    with open(filename, mode="w", newline="", encoding="utf-8") as f:
-        writer = csv.writer(f)
+    """
+    リネーム結果をCSVファイルに出力する。
 
-        writer.writerow(["元の名前(拡張子なし)", "サイズ(Bytes)"])
+    Parameters
+    ----------
+    results : list[tuple[str, int]]
+        (stem, size) のタプル配列
+    filename : str
+        保存するCSVファイル名
+    """
 
-        for stem, size in results:
-            writer.writerow([stem, f"{size:,}"])
+    # 遅延インポート（CSV出力時のみ依存）
+    try:
+        import csv
+    except ImportError:
+        print("csvモジュールの読み込みに失敗しました。")
+        return
 
-    print(f"CSVファイルを保存しました: {filename}")
+    if not results:
+        print("出力対象のデータがありません。")
+        return
 
+    try:
+        with open(filename, mode="w", newline="", encoding="utf-8-sig") as f:
+            writer = csv.writer(f)
 
-def export_to_tsv(results, filename="rename_result.tsv"):
-    with open(filename, mode="w", newline="", encoding="utf-8") as f:
-        writer = csv.writer(f, delimiter="\t")
+            # ヘッダー
+            writer.writerow(["元の名前(拡張子なし)", "サイズ(Bytes)"])
 
-        writer.writerow(["元の名前(拡張子なし)", "サイズ(Bytes)"])
+            # データ
+            for stem, size in results:
+                writer.writerow([stem, size])
 
-        for stem, size in results:
-            writer.writerow([stem, f"{size:,}"])
+        print(f"CSVファイルを保存しました: {filename}")
 
-    print(f"TSVファイルを保存しました: {filename}")
+    except Exception as e:
+        print("CSV出力中にエラーが発生しました。")
+        print(f"詳細: {e}")
