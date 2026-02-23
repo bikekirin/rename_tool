@@ -1,75 +1,69 @@
-import os
-import re
 import argparse
 from pathlib import Path
 
 from rename_tool.table_view import show_table
-from rename_tool.export_excel import export_to_excel
-from rename_tool.export_csv import export_to_csv, export_to_tsv
-
-
-def has_size_suffix(filename_stem):
-    """
-    末尾が _数字 になっているか判定
-    例: file_1234 → True
-    """
-    return re.search(r"_\d+$", filename_stem) is not None
+from rename_tool.export_excel import export_excel
+from rename_tool.export_csv import export_csv
+from rename_tool.export_tsv import export_tsv
 
 
 def main():
-    parser = argparse.ArgumentParser(description="ファイル名にサイズを付加するツール")
-    parser.add_argument("target_dir", help="対象フォルダのパス")
-    parser.add_argument("--dry-run", action="store_true", help="リネームせず確認のみ")
+    parser = argparse.ArgumentParser(description="サイズ付きリネームCLI")
+    parser.add_argument("directory")
+    parser.add_argument("--dry-run", action="store_true", help="変更せず確認のみ")
+    parser.add_argument("--csv", action="store_true")
+    parser.add_argument("--excel", action="store_true")
+    parser.add_argument("--tsv", action="store_true")
 
     args = parser.parse_args()
-    target_path = Path(args.target_dir)
 
-    if not target_path.exists():
-        print("指定フォルダが存在しません。")
+    target_dir = Path(args.directory)
+
+    if not target_dir.exists():
+        print("指定ディレクトリが存在しません")
         return
 
-    if not target_path.is_dir():
-        print("指定パスはフォルダではありません。")
-        return
+    files = sorted(
+        [f for f in target_dir.iterdir() if f.is_file() and not f.name.startswith(".")]
+    )
 
-    results = []
+    print(f"\n対象ファイル数: {len(files)} 件\n")
 
-    for file_path in target_path.iterdir():
-        if not file_path.is_file():
-            continue
+    file_data = []
 
-        stem = file_path.stem
-        suffix = file_path.suffix
+    for f in files:
+        size = f.stat().st_size
+        new_name = f"{f.stem}_{size}{f.suffix}"
+        new_path = f.with_name(new_name)
 
-        # 既に _サイズ が付いているものは除外
-        if has_size_suffix(stem):
-            continue
+        file_data.append({
+            "name": f.stem,
+            "size": size
+        })
 
-        size = file_path.stat().st_size
+        if args.dry_run:
+            print(f"[DRY-RUN] {f.name} → {new_name}")
+        else:
+            print(f"{f.name} → {new_name}")
+            f.rename(new_path)
 
-        new_name = f"{stem}_{size}{suffix}"
-        new_path = file_path.with_name(new_name)
+    if not args.dry_run:
+        print("\nリネームを実行しました。\n")
+    else:
+        print("\n※ dry-run のため変更は行われていません\n")
 
-        results.append((stem, size))
+    show_table(file_data)
 
-        if not args.dry_run:
-            file_path.rename(new_path)
+    export_all = not (args.csv or args.excel or args.tsv)
 
-    if not results:
-        print("対象ファイルがありません。")
-        return
+    if args.csv or export_all:
+        export_csv(file_data)
 
-    # ファイル数表示
-    print(f"\n対象ファイル数: {len(results)} 件")
+    if args.excel or export_all:
+        export_excel(file_data)
 
-
-    # 表示
-    show_table(results)
-
-    # 出力（正式仕様）
-    export_to_excel(results)
-    export_to_csv(results)
-    export_to_tsv(results)
+    if args.tsv or export_all:
+        export_tsv(file_data)
 
 
 if __name__ == "__main__":

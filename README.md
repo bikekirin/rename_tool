@@ -40,13 +40,13 @@ source .venv/bin/activate
 pip install -r requirements.txt
 
 ## Basic usage
-python -m rename_tool.main <target_directory>
+rename_tool <target_directory>
 
 ## Dry run mode
-python -m rename_tool.main <target_directory> --dry-run
+rename_tool <target_directory> --dry-run
 
 ## Example
-python -m rename_tool.main ~/test_files --dry-run
+rename_tool ~/test_files --dry-run
 
 ### Output example:
 対象ファイル数: 4 件
